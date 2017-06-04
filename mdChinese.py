@@ -9,35 +9,25 @@ import sys
 levelCounter = [0, 0, 0, 0, 0, 0]
 
 
-# 判断是否为标题
 def is_title(title):
+    '''
+    以行是否以'#'开头，判断是否为标题行
+    :param title: 一行文本
+    :return: boolean值
+    '''
     return title.startswith('#')
-
-
-# 判断是几级标题，返回数字1,2,3,……,6
-def get_title_level(title):
-    count = len(title)
-    number = 0
-    for x in range(count):
-        # 遇到' '，退出循环
-        if title[x] == ' ':
-            break
-        # 遇到'#'，标题等级+1
-        if title[x] == '#':
-            number += 1
-    # 返回时将字符串行首的空格去掉
-    return number, title[x:].lstrip()
 
 
 def get_title(title):
     '''
-    获取标题等级以及标题内容（不含#号的部分）
-    :param title: 原标题
-    :return: 标题等级,标题内容（不含#号的部分）
+    获取标题前缀（由多个'#'组成的那个标题前缀）、等级以及标题内容（不含#号的部分）
+    :param title: 原标题行
+    :return: 标题前缀（由多个'#'组成的那个标题前缀），标题等级,标题内容（不含#号的部分）
     '''
-    count = len(title)
+
+    # 记录标题等级
     number = 0
-    for x in range(count):
+    for x in range(len(title)):
         # 遇到标题内容，退出循环
         if title[x] != '#':
             break
@@ -49,6 +39,13 @@ def get_title(title):
 
 
 def get_number_str(current_level):
+    '''
+    获取标题编号字符串，如当前标题为2.2里面3级标题，那么相应的标题编号字符串为'2.2.3.'
+    :param current_level: 当前标题的等级
+    :return: 标题编号字符串
+    '''
+
+    # 编号前空一格
     numberStr = ' '
     for x in range(current_level):
         numberStr = '%s%d%s' % (numberStr, levelCounter[x], '.')
@@ -56,27 +53,40 @@ def get_number_str(current_level):
 
 
 def new_title(title_prefix, number_str, title_content):
+    '''
+    生成新标题
+    :param title_prefix: 标题前缀，如'###'
+    :param number_str: 标题编号字符串，如' 1.2.1.'
+    :param title_content: 标题内容，如'我是三级标题'
+    :return: 带有标题编号的标题字符串，如'### 1.2.1. 我是三级标题'
+    '''
     return '%s%s%s' % (title_prefix, number_str, title_content)
 
 
 def get_new_title(title_prefix, level, title_content):
+    '''
+    生成新标题
+    :param title_prefix: 标题前缀，如'###'
+    :param level: 标题等级，如3
+    :param title_content: 标题内容，如'我是三级标题'
+    :return: 带有标题编号的标题字符串，如'### 1.2.1. 我是三级标题'
+    '''
     return new_title(title_prefix, get_number_str(level), title_content)
 
 
 try:
 
-    # 读入文件
+    # 从传入参数指定的文件名读入文件
+    # 传入参数的读取应该从下标1开始，以命令“python mdChinese.py ./source.md ./result.md”为例，下标0的参数是mdChinese.py
     sourceMD = open(sys.argv[1], 'r')
-    # sourceMD = open(sys.argv[0]'./source.md', 'r')
-    # 写入文件
+    # 从传入参数指定的文件名写入文件
     resultMD = open(sys.argv[2], 'w')
-    # resultMD = open(sys.argv[1]'./README.md', 'w')
 
     # 记录上一行的标题等级
     lastLevel = 1
     for line in sourceMD.readlines():
 
-        # 判断是否为标题
+        # 判断是否为标题，不是标题行，直接写入
         if not is_title(line):
             resultMD.write(line)
             continue
@@ -92,7 +102,7 @@ try:
                 levelCounter[x] = 0
         lastLevel = titleLevel
 
-        # 获取新标题
+        # 生成新标题
         newTitle = get_new_title(titlePrefix, titleLevel, titleContent)
         # 写入新标题
         resultMD.write(newTitle)
