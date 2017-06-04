@@ -1,5 +1,7 @@
 # 生成markdown标题编号
 
+由[矿大翔工作室](https://github.com/cumtflyingstudio)后端组成员渣渣渣进，在其组长大人[八百](https://github.com/eightHundreds)的强势围观之下，开发而成，如有不满，欢迎来校门口堵我和我的组长大人
+
 ## 原理
 
 ### 标题行识别
