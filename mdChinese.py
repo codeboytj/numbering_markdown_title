@@ -47,7 +47,8 @@ def get_number_str(current_level):
 
     # 编号前空一格
     numberStr = ' '
-    for x in range(current_level):
+    # 从2级标题开始编号，1级标题应该是整篇文章的标题
+    for x in range(1, current_level):
         numberStr = '%s%d%s' % (numberStr, levelCounter[x], '.')
     return numberStr
 
